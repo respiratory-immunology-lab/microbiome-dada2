@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+packrat/lib*/
+packrat/bundles*/
+*.html
+!example.nb.html
+example.Rmd
+run_data/*
+!*/.gitkeep
+data/
+fig/
+Rplots*
