@@ -578,30 +578,9 @@ fwrite(dada2otu(seqtab.nochim, taxonomy.species), 'data/otu_table.txt', quote = 
 
 ## Wrapping Up
 
-Compile all barcode_to_sample.txt files into a single mapping file stored in the `data` directory.
-
 Archive the initial, multiplexed fastq files along with the `barcode_to_sample.txt` files and run-specific figures and intermediate files in an archive named `run_data.tar.gz`.
 
 Finaly, create a html report and archive it along with final data, figures, packrat .lock and package sources as well as this R Notebook. Intermediate files and compiled R libraries will be ignored.
-
-```{bash eval=F}
-# BASH
-# Create a global mapping file
-[[ -e 'data/map.txt' ]] && rm 'data/map.txt'
-printf '#SampleID\tBarcode\tRunID\n' > data/map.txt
-ls -d run_data/* \
-  | parallel -j -2 'sed -e 's|$| \t'{/}'|g' {}/barcode_to_sample* >> data/map.txt'
-```
-
-```{r eval=F}
-# R
-# Add total counts to the global mapping file and rearange samples
-map <- as.data.frame(fread('data/map.txt'))
-row.names(map) <- map[, 1]
-map <- map[row.names(seqtab.nochim), ]
-map$TotalCount <- rowSums(seqtab.nochim)
-fwrite(map, 'data/map.txt', quote = F, sep = '\t')
-```
 
 ```{bash eval=F}
 # BASH
