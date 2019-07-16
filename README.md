@@ -101,7 +101,7 @@ Before starting, make sure you have the five files listed below:
 2. **`R2.fastq.gz`**: FASTQ file for the reverse read
 3. **`Index.fastq.gz`**: FASTQ file for the index read
 4. **`barcode_to_sample_[runNN].txt`**: A text file mapping index barcodes to samples
-5. A DADA2-formatted reference database: see https://benjjneb.github.io/dada2/training.html. Per example, Silva version 132: `silva_nr_v132_train_set.fa.gz` and `silva_species_assignment_v132.fa.gz`. 
+5. A DADA2-formatted reference database: see https://benjjneb.github.io/dada2/training.html. For example, Silva version 132: `silva_nr_v132_train_set.fa.gz` and `silva_species_assignment_v132.fa.gz`. 
 
 It is assumed that the FASTQ files were archived using gzip.
 
@@ -125,7 +125,7 @@ $ git clone https://github.com/chuvpne/dada2-pipeline.git my_project_dir
 $ cd my_project_dir
 ```
 If not done yet, get a copy of the DADA2-formatted reference database of your choice at https://benjjneb.github.io/dada2/training.html. We recommend to store it in a directory dedicated to databases instead of keeping it inside the main project directory.
-Per example, create a `db` directory in your home directory and download the SILVA version 132 reference database into it (Assuming wget is installed):
+For example, create a `db` directory in your home directory and download the SILVA version 132 reference database into it (Assuming wget is installed):
 ```
 $ mkdir $HOME/db
 $ wget https://zenodo.org/record/1172783/files/silva_nr_v132_train_set.fa.gz -P $HOME/db/
@@ -192,9 +192,6 @@ my_project_dir
 ## Citation
 
 If you used this repository in a publication, please mention its url.
-Per example:
-
-**_The implementation of the DADA2 pipeline used to process FASTQ files is available at https://github.com/chuvpne/dada2-pipeline._**
 
 In addition, you may cite the tools used by this pipeline:
 
