@@ -45,9 +45,9 @@ If multiple runs have to be processed, this will be done in parallel. The `-j` a
 # If required, activate your illumina-utils virtual environment 
 # source ~/illumina-utils/bin/activate
 
-# For each run, store demultiplexed sequences in a new directory named 'demultiplexed'
+# For each run, store demultiplexed sequences in a new directory named "demultiplexed"
 ls -d run_data/* \
-  | parallel -j -2 'outputdir=demultiplexed; [[ ! -d {}/'${outputdir}' ]] && mkdir {}/'${outputdir}'; gunzip {}/*.fastq.gz && iu-demultiplex -s {}/barcode_to_sample* --r1 {}/R1.fastq --r2 {}/R2.fastq -i {}/Index.fastq -x -o {}/'${outputdir}''
+  | parallel -j -2 'outputdir=demultiplexed; [[ ! -d {}/"${outputdir}" ]] && mkdir {}/"${outputdir}"; gunzip {}/*.fastq.gz && iu-demultiplex -s {}/barcode_to_sample* --r1 {}/R1.fastq --r2 {}/R2.fastq -i {}/Index.fastq -x -o {}/"${outputdir}"'
 ```
 
 # Running the DADA2 pipeline
