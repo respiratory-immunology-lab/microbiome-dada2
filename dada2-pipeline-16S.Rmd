@@ -553,7 +553,7 @@ fwrite(as.data.frame(taxonomy.species), 'data/taxonomy_species.txt', quote = F, 
 The DADA2 pipeline provides results as a count table of ASVs per samples and a taxonomic classification of each ASV in two separate files. As detailed in the DADA2 tutorial (https://benjjneb.github.io/dada2/tutorial.html), these two objects can easily be used with the phyloseq R package for subsequent data analysis.
 
 For compatibility with other data analysis tools, a count table in a tab-delimited text format matching the Qiime classic OTU table format (https://www.drive5.com/usearch/manual/qiime_classic.html) is also created.
-The table contains samples in columns and ASVs in rows. The taxonomy at the species level is added as an extra 'taxonomy' column. The first columns contains mock OTU IDs.
+The table contains samples in columns and ASVs in rows. The taxonomy at the species level is added as an extra 'taxonomy' column as well as a 'sequence' column. The first columns contains mock OTU IDs.
 
 ```{r, eval=F, echo=F}
 # R
@@ -565,9 +565,10 @@ taxonomy.species <- readRDS('data/taxonomy_species.rds')
 ```{r export, eval=FALSE}
 # R
 dada2otu <- function(seqtab=NULL, taxonomy=NULL) {
-  out <- as.data.frame(cbind(c(1:nrow(taxonomy)), t(as.data.frame(seqtab)), apply(as.data.frame(taxonomy), 1, paste, collapse = '; ')))
+  out <- as.data.frame(cbind(c(1:nrow(taxonomy)), t(as.data.frame(seqtab)), 
+                             apply(as.data.frame(taxonomy), 1, paste, collapse = '; '), colnames(seqtab)))
   row.names(out) <- c(1:nrow(out))
-  names(out) <- c('#OTU ID', row.names(as.data.frame(seqtab)), 'taxonomy')
+  names(out) <- c('#OTU ID', row.names(as.data.frame(seqtab)), 'taxonomy', 'sequence')
   return(out)
 }
 fwrite(dada2otu(seqtab.nochim, taxonomy.species), 'data/otu_table.txt', quote = F, sep = '\t')
