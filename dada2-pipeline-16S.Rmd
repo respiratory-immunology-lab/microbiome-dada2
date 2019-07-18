@@ -83,12 +83,29 @@ paste(nc, 'cores used')
 # Set seed for pseudo-random numbers generation
 set.seed(2)
 ```
+
+# Check repeating Samples
+
+First, we want to check all samples are unique. If duplicate sample names are found, then checked these samples and if necessary, renamed within the barcode_to_sample* file. 
+
+```{r Check repeating Samples}
+barcode.dir <- dir(file.path(list.dirs("run_data", recursive = F)), pattern="barcode", all.files=T, full.names=T)
+
+sample.names.directory <- ldply(barcode.dir, function(f) {
+     dat = data.frame( sample.name = read.table(f, sep = "\t", fill=FALSE, header = FALSE)[,1], directory = f)
+     return(dat)
+   })
+
+duplicate.sample.names.directory <- sample[duplicated(sample.names.directory[,1]) | duplicated(sample.names.directory[,1], fromLast = TRUE),]
+```
+
 # Demultiplexing
 
 Demultiplexing is performed using the `iu-demultiplex` command from the illumina-utils FASTQ files processing toolbox.
 If multiple runs have to be processed, this will be done in parallel. The `-j` argument in the `parallel` command specifies the number of computing cores to use. You may edit it to your need (considering both available CPUs and memory).
 
 *Make sure that the files names are consistant (i.e. R1.fastq.gz, R2.fastq.gz, Index.fastq.gz and barcode_to_sample_[runNN].txt)*
+
 ```{bash demultiplexing, eval=F}
 # BASH
 # If required, activate your illumina-utils virtual environment 
