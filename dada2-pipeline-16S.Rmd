@@ -34,25 +34,7 @@ Date:
 
 Place: (ex: Lambda sequencing facility)
 
-# Demultiplexing
-
-Demultiplexing is performed using the `iu-demultiplex` command from the illumina-utils FASTQ files processing toolbox.
-If multiple runs have to be processed, this will be done in parallel. The `-j` argument in the `parallel` command specifies the number of computing cores to use. You may edit it to your need (considering both available CPUs and memory).
-
-*Make sure that the files names are consistant (i.e. R1.fastq.gz, R2.fastq.gz, Index.fastq.gz and barcode_to_sample_[runNN].txt)*
-```{bash demultiplexing, eval=F}
-# BASH
-# If required, activate your illumina-utils virtual environment 
-# source ~/illumina-utils/bin/activate
-
-# For each run, store demultiplexed sequences in a new directory named "demultiplexed"
-ls -d run_data/* \
-  | parallel -j -2 'outputdir=demultiplexed; [[ ! -d {}/"${outputdir}" ]] && mkdir {}/"${outputdir}"; gunzip {}/*.fastq.gz && iu-demultiplex -s {}/barcode_to_sample* --r1 {}/R1.fastq --r2 {}/R2.fastq -i {}/Index.fastq -x -o {}/"${outputdir}"'
-```
-
-# Running the DADA2 pipeline
-
-## Environment setup
+# Environment setup
 
 Make sure you installed all required libaries **after** launching the `.Rproj` file and initialization with packrat using `packrat::init()`. Packrat will install packages into the `packrat/lib` directory. This takes a while but will not repeat after first installation.
 
@@ -67,7 +49,7 @@ packrat::init(project = '.', infer.dependencies = FALSE)
 # Install dada2 via Bioconductor
 if (!requireNamespace('BiocManager', quietly = TRUE))
     install.packages('BiocManager')
-BiocManager::install('dada2', version = '3.9') # You may need to change the dada2 version of BiocManager depending on te=he R/dada2 versions
+BiocManager::install(c('dada2', 'ldply'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on te=he R/dada2 versions
 
 # Install required packages via CRAN
 install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table'))
@@ -80,8 +62,8 @@ install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'da
 version$version.string
 version$platform
 suppressMessages(library(dada2)); packageVersion('dada2')
+suppressMessages(library(ldply)); packageVersion('ldply')
 suppressMessages(library(foreach)); packageVersion('foreach')
-# Distribution of computation over multiple computing cores (parallelization) will be handled by the `doParallel` package
 suppressMessages(library(doParallel)); packageVersion('doParallel')
 suppressMessages(library(ggplot2)); packageVersion('ggplot2')
 suppressMessages(library(ggpubr)); packageVersion('ggpubr')
@@ -101,6 +83,23 @@ paste(nc, 'cores used')
 # Set seed for pseudo-random numbers generation
 set.seed(2)
 ```
+# Demultiplexing
+
+Demultiplexing is performed using the `iu-demultiplex` command from the illumina-utils FASTQ files processing toolbox.
+If multiple runs have to be processed, this will be done in parallel. The `-j` argument in the `parallel` command specifies the number of computing cores to use. You may edit it to your need (considering both available CPUs and memory).
+
+*Make sure that the files names are consistant (i.e. R1.fastq.gz, R2.fastq.gz, Index.fastq.gz and barcode_to_sample_[runNN].txt)*
+```{bash demultiplexing, eval=F}
+# BASH
+# If required, activate your illumina-utils virtual environment 
+# source ~/illumina-utils/bin/activate
+
+# For each run, store demultiplexed sequences in a new directory named "demultiplexed"
+ls -d run_data/* \
+  | parallel -j -2 'outputdir=demultiplexed; [[ ! -d {}/"${outputdir}" ]] && mkdir {}/"${outputdir}"; gunzip {}/*.fastq.gz && iu-demultiplex -s {}/barcode_to_sample* --r1 {}/R1.fastq --r2 {}/R2.fastq -i {}/Index.fastq -x -o {}/"${outputdir}"'
+```
+
+# Running the DADA2 pipeline
 
 ## Quality Check
 
@@ -177,7 +176,7 @@ runs <- basename(runs.dirs)
 ```{r set up parameters, eval=F, echo=F}
 # R
 # Set up parameters for filtering and trimming (first parameter stands for R1, second for R2)
-truncLen <- c(240, 200) # Truncate reads after truncLen bases (Default 0, no truncation)
+truncLen <- c(0, 0) # Truncate reads after truncLen bases (Default 0, no truncation)
 maxEE <- c(2, 2) # After truncation, reads with higher than maxEE 'expected errors' will be discarded, a maxEE 2 is recommended (Default Inf, no EE filtering)
 truncQ <- c(2,2) # Truncate reads at the first instance of a quality score less than or equal to truncQ (Default 2)
 maxN <- c(0,0) # After truncation, sequences with more than maxN Ns will be discarded (Default 0)
@@ -462,7 +461,7 @@ seqtab.nochim <- readRDS('data/seqtab_nochim.rds')
 track.plots <- foreach(i=1:length(runs), .packages = c('ggplot2', 'reshape2')) %do% {
   filtering <- readRDS(file.path(runs.dirs[i], 'filtering_report.rds'))
   row.names(filtering) <- gsub('-R1.fastq', '', row.names(filtering))
-  track <- cbind(filtering[row.names(filtering) %in% row.names(seqtab)],
+  track <- cbind(filtering[row.names(filtering) %in% row.names(seqtab),],
                  rowSums(seqtab[row.names(seqtab) %in% row.names(filtering), ]),
                  rowSums(seqtab.nochim[row.names(seqtab.nochim) %in% row.names(filtering), ]))
   colnames(track) <- c('Input', 'Filtered', 'Merged', 'Non chimeric')
@@ -514,7 +513,6 @@ seqtab.nochim <- readRDS('data/seqtab_nochim.rds')
 # R
 
 # Path to the DADA2-formatted reference database
-# Note: use -v to mount the database when using docker containers
 # Replace '/path/to/train_set.fa.gz' by the right path to the reference database (ex:'/home/user/db/silva_nr_v132_train_set.fa.gz')
 db.fp <- '/path/to/train_set.fa.gz'
 
@@ -535,7 +533,6 @@ taxonomy <- readRDS('data/taxonomy.rds')
 # R
 
 # Path to the DADA2-formatted reference database for species assignment
-# Note: use -v to mount the database when using docker containers
 # Replace '/path/to/species_assignment.fa.gz' by the right path to the reference database for species assignment (ex:'/home/user/db/silva_species_assignment_v132.fa.gz')
 db.fp <- '/path/to/species_assignment.fa.gz'
 
@@ -580,7 +577,7 @@ fwrite(dada2otu(seqtab.nochim, taxonomy.species), 'data/otu_table.txt', quote = 
 
 Archive the initial, multiplexed fastq files along with the `barcode_to_sample.txt` files and run-specific figures and intermediate files in an archive named `run_data.tar.gz`.
 
-Finaly, create a html report and archive it along with final data, figures, packrat .lock and package sources as well as this R Notebook. Intermediate files and compiled R libraries will be ignored.
+Finally, create a html report and archive it along with final data, figures, packrat .lock and package sources as well as this R Notebook. Intermediate files and compiled R libraries will be ignored.
 
 ```{bash eval=F}
 # BASH
