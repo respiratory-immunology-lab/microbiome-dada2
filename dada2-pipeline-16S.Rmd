@@ -84,7 +84,7 @@ paste(nc, 'cores used')
 set.seed(2)
 ```
 
-# Check repeating Samples
+## Check repeating Samples
 
 First, we want to check all samples are unique. If duplicate sample names are found, then checked these samples and if necessary, renamed within the barcode_to_sample* file. 
 
