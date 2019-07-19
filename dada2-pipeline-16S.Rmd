@@ -49,10 +49,10 @@ packrat::init(project = '.', infer.dependencies = FALSE)
 # Install dada2 via Bioconductor
 if (!requireNamespace('BiocManager', quietly = TRUE))
     install.packages('BiocManager')
-BiocManager::install(c('dada2', 'ldply'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on te=he R/dada2 versions
+BiocManager::install(c('dada2'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on te=he R/dada2 versions
 
 # Install required packages via CRAN
-install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table'))
+install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr'))
 ```
 
 *You need to run this chunk every time to load required packages.*
@@ -62,7 +62,7 @@ install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'da
 version$version.string
 version$platform
 suppressMessages(library(dada2)); packageVersion('dada2')
-suppressMessages(library(ldply)); packageVersion('ldply')
+suppressMessages(library(plyr)); packageVersion('plyr')
 suppressMessages(library(foreach)); packageVersion('foreach')
 suppressMessages(library(doParallel)); packageVersion('doParallel')
 suppressMessages(library(ggplot2)); packageVersion('ggplot2')
@@ -96,7 +96,7 @@ sample.names.directory <- ldply(barcode.dir, function(f) {
      return(dat)
    })
 
-duplicate.sample.names.directory <- sample[duplicated(sample.names.directory[,1]) | duplicated(sample.names.directory[,1], fromLast = TRUE),]
+duplicate.sample.names.directory <-sample.names.directory[duplicated(sample.names.directory[,1]) | duplicated(sample.names.directory[,1], fromLast = TRUE),]
 ```
 
 # Demultiplexing
