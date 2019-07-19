@@ -195,7 +195,7 @@ data." _Nature Methods_, *13*, 581-583. doi: 10.1038/nmeth.3869.
 * **illumina-utils:** Eren AM, Vineis JH, Morrison HG, Sogin ML (2013). "A Filtering Method to Generate High Quality Short Reads Using Illumina Paired-End Technology." _PLOS ONE_, 8(6). doi: 10.1371/journal.pone.0066643.
 
 
-* **cutadapt:** MARTIN, Marcel (2011). "Cutadapt removes adapter sequences from high-throughput sequencing reads." _EMBnet.journal, [S.l.]_ doi: https://doi.org/10.14806/ej.17.1.200.
+* **cutadapt:** MARTIN, Marcel (2011). "Cutadapt removes adapter sequences from high-throughput sequencing reads." _EMBnet.journal, [S.l.]_ doi: 10.14806/ej.17.1.200.
 
 ## Rights
 
