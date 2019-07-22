@@ -52,7 +52,7 @@ if (!requireNamespace('BiocManager', quietly = TRUE))
 BiocManager::install(c('dada2', 'Biostrings', 'ShortRead'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on your current R version
 
 # Install required packages via CRAN
-install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'ldply')
+install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr')
 ```
 
 *You need to run this chunk every time to load required packages.*
