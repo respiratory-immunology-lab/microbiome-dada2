@@ -49,10 +49,10 @@ packrat::init(project = '.', infer.dependencies = FALSE)
 # Install dada2 and other requires packages via Bioconductor
 if (!requireNamespace('BiocManager', quietly = TRUE))
     install.packages('BiocManager')
-BiocManager::install(c('dada2', 'Biostrings', 'ShortRead', 'ldply'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on your current R version
+BiocManager::install(c('dada2', 'Biostrings', 'ShortRead'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on your current R version
 
 # Install required packages via CRAN
-install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table'))
+install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'ldply')
 ```
 
 *You need to run this chunk every time to load required packages.*
