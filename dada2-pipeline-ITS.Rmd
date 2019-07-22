@@ -62,7 +62,7 @@ install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'da
 version$version.string
 version$platform
 suppressMessages(library(dada2)); packageVersion('dada2')
-suppressMessages(library(ldply)); packageVersion('ldply')
+suppressMessages(library(plyr)); packageVersion('plyr')
 suppressMessages(library(foreach)); packageVersion('foreach')
 suppressMessages(library(doParallel)); packageVersion('doParallel')
 suppressMessages(library(ggplot2)); packageVersion('ggplot2')
@@ -96,7 +96,7 @@ sample.names.directory <- ldply(barcode.dir, function(f) {
      dat = data.frame( sample.name = read.table(f, sep = "\t", fill=FALSE, header = FALSE)[,1], directory = f)
      return(dat)
    })
-duplicate.sample.names.directory <- sample[duplicated(sample.names.directory[,1]) | duplicated(sample.names.directory[,1], fromLast = TRUE),]
+duplicate.sample.names.directory <- sample.names.directory[duplicated(sample.names.directory[,1]) | duplicated(sample.names.directory[,1], fromLast = TRUE),]
 ```
 
 # Demultiplexing
