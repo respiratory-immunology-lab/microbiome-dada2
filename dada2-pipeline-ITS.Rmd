@@ -175,12 +175,15 @@ primerHits <- function(primer, fn) {
 }
 
 # We will print and check the primer count for the first sample of each run
-for (i in 1:length(runs.dirs)){
+for (i in 1:length(runs)){
+  fwd.fn <- list.files(file.path(runs.dirs[i], 'ITS_filterN'), pattern = '-R1.fastq')
+  rev.fn <- list.files(file.path(runs.dirs[i], 'ITS_filterN'), pattern = '-R2.fastq')
   counts <- rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_filterN', fwd.fn[[1]])),
                   FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_filterN', rev.fn[[1]])),
                   REV.ForwardReads = sapply(REV.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_filterN', fwd.fn[[1]])),
-                  REV.ReverseReads = sapply(REV.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_filterN', rev.fn[[1]])))}
-counts
+                  REV.ReverseReads = sapply(REV.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_filterN', rev.fn[[1]])))
+  print(counts)
+  }
 ```
 
 For our custom ITS primers used in the respiratory immunology lab, we only have hits on the reverse complement. Depending on the library preparation protocol, we could also get hits for the `Forward` `FWD.ForwardReads` and `Forward` `REV.ReverseReads`. We will now create the necessary flags for the `cutadapt` program (bash) to run. This can take a little while (and is running on 1 core).
@@ -216,13 +219,16 @@ for(i in 1:length(runs)) {
                                              file.path(runs.dirs[i], 'ITS_filterN', rev.fn)[j])) # input files
     }}
 
-# We will print and check the primer count for the first sample of each run
-for (i in 1:length(runs.dirs)){
+# We will print and check the primer count for the first sample of each run after cutadapt
+for (i in 1:length(runs)){
+  fwd.fn <- list.files(file.path(runs.dirs[i], 'ITS_cutadapt'), pattern = '-R1.fastq')
+  rev.fn <- list.files(file.path(runs.dirs[i], 'ITS_cutadapt'), pattern = '-R2.fastq')
   counts <- rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_cutadapt', fwd.fn[[1]])),
                   FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_cutadapt', rev.fn[[1]])),
                   REV.ForwardReads = sapply(REV.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_cutadapt', fwd.fn[[1]])),
-                  REV.ReverseReads = sapply(REV.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_cutadapt', rev.fn[[1]])))}
-counts
+                  REV.ReverseReads = sapply(REV.orients, primerHits, fn = file.path(runs.dirs[i], 'ITS_cutadapt', rev.fn[[1]])))
+  print(counts)
+  }
 ```
 
 We ensure that primers are no longer detected in the ITS_cutadapt reads before going to the next step.
