@@ -97,6 +97,7 @@ sample.names.directory <- ldply(barcode.dir, function(f) {
      return(dat)
    })
 duplicate.sample.names.directory <- sample.names.directory[duplicated(sample.names.directory[,1]) | duplicated(sample.names.directory[,1], fromLast = TRUE),]
+duplicate.sample.names.directory 
 ```
 
 # Demultiplexing
