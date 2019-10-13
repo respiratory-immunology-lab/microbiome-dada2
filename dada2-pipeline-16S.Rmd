@@ -49,10 +49,10 @@ packrat::init(project = '.', infer.dependencies = FALSE)
 # Install dada2 via Bioconductor
 if (!requireNamespace('BiocManager', quietly = TRUE))
     install.packages('BiocManager')
-BiocManager::install(c('dada2'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on te=he R/dada2 versions
+BiocManager::install(c('dada2', 'DECIPHER'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on te=he R/dada2 versions
 
 # Install required packages via CRAN
-install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr'))
+install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr', 'phangorn'))
 ```
 
 *You need to run this chunk every time to load required packages.*
@@ -69,6 +69,8 @@ suppressMessages(library(ggplot2)); packageVersion('ggplot2')
 suppressMessages(library(ggpubr)); packageVersion('ggpubr')
 suppressMessages(library(reshape2)); packageVersion('reshape2')
 suppressMessages(library(data.table)); packageVersion('data.table')
+suppressMessages(library(phangorn)); packageVersion('phangorn')
+suppressMessages(library(DECIPHER)); packageVersion('DECIPHER')
 
 # Parallelization
 cores <- detectCores()
@@ -532,7 +534,7 @@ seqtab.nochim <- readRDS('data/seqtab_nochim.rds')
 
 # Path to the DADA2-formatted reference database
 # Replace '/path/to/train_set.fa.gz' by the right path to the reference database (ex:'/home/user/db/silva_nr_v132_train_set.fa.gz')
-db.fp <- '/path/to/train_set.fa.gz'
+# db.fp <- '~/celine.pattaroni@monash.edu/03_Bioinformatics/Databases/16S/silva_nr_v132_train_set.fa.gz'
 
 taxonomy <- assignTaxonomy(seqtab.nochim, db.fp, minBoot = 100, multithread=nc)
 saveRDS(taxonomy, 'data/taxonomy.rds')
@@ -552,7 +554,7 @@ taxonomy <- readRDS('data/taxonomy.rds')
 
 # Path to the DADA2-formatted reference database for species assignment
 # Replace '/path/to/species_assignment.fa.gz' by the right path to the reference database for species assignment (ex:'/home/user/db/silva_species_assignment_v132.fa.gz')
-db.fp <- '/path/to/species_assignment.fa.gz'
+# db.fp <- db.fp <- '~/celine.pattaroni@monash.edu/03_Bioinformatics/Databases/16S/silva_species_assignment_v132.fa.gz'
 
 # Run the taxonomy assignment incrementally to avoid memory overloading (https://github.com/benjjneb/dada2/issues/239)
 chunk.size <- 10000  # size of taxonomy increments
@@ -597,6 +599,34 @@ fwrite(dada2otu(seqtab.nochim, taxonomy.species), 'data/otu_table.txt', quote = 
 total_counts <- as.data.frame(cbind(row.names(as.data.frame(seqtab)), rowSums(seqtab.nochim)))
 names(total_counts) <- c('SampleID', 'Total count')
 fwrite(total_counts, 'data/total_counts.txt', quote = F, sep = '\t')
+```
+
+## Create a phylogenetic tree
+
+The DADA2 sequence inference method is reference-free, so we must construct the phylogenetic tree relating the inferred sequence variants de novo. We begin by performing a multiple-alignment using the `DECIPHER` R package. The `phangorn` R package is then used to construct a phylogenetic tree. Here we first construct a neighbor-joining tree, and then fit a GTR+G+I (Generalized time-reversible with Gamma rate variation) maximum likelihood tree using the neighbor-joining tree as a starting point. Adapted from Callahan *et al.* [pipeline](https://f1000research.com/articles/5-1492/v2). 
+
+```{r tree, eval=FALSE}
+# R
+# Extract ASV sequences
+seqs <- colnames(seqtab.nochim)
+names(seqs) <- seqs
+
+# Align sequences
+alignment <- AlignSeqs(DNAStringSet(seqs), anchor = NA)
+phang.align <- phyDat(as(alignment, 'matrix'), type ='DNA')
+dm <- dist.ml(phang.align)
+
+# Build tree (NJ)
+treeNJ <- NJ(dm) # Note, tip order != sequence order
+
+# Fit a GTR+G+I (Generalized time-reversible with Gamma rate variation) maximum likelihood tree
+fit <- pml(treeNJ, data = phang.align)
+fitGTR <- update(fit, k = 4, inv = 0.2)
+fitGTR <- optim.pml(fitGTR, model ='GTR', optInv = TRUE, optGamma = TRUE,
+                    rearrangement = 'stochastic', control = pml.control(trace = 0))
+
+# Save tree as a R data file
+saveRDS(fitGTR, 'data/tree.rds')
 ```
 
 ## Wrapping Up
