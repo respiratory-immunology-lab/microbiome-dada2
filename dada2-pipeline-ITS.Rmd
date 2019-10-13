@@ -49,10 +49,10 @@ packrat::init(project = '.', infer.dependencies = FALSE)
 # Install dada2 and other requires packages via Bioconductor
 if (!requireNamespace('BiocManager', quietly = TRUE))
     install.packages('BiocManager')
-BiocManager::install(c('dada2', 'Biostrings', 'ShortRead'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on your current R version
+BiocManager::install(c('dada2', 'Biostrings', 'ShortRead', 'DECIPHER'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on your current R version
 
 # Install required packages via CRAN
-install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr'))
+install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr', 'phangorn'))
 ```
 
 *You need to run this chunk every time to load required packages.*
@@ -71,6 +71,8 @@ suppressMessages(library(reshape2)); packageVersion('reshape2')
 suppressMessages(library(data.table)); packageVersion('data.table')
 suppressMessages(library(Biostrings)); packageVersion('Biostrings')
 suppressMessages(library(ShortRead)); packageVersion('ShortRead')
+suppressMessages(library(phangorn)); packageVersion('phangorn')
+suppressMessages(library(DECIPHER)); packageVersion('DECIPHER')
 
 # Parallelization
 cores <- detectCores()
@@ -202,9 +204,9 @@ R1.flags <- paste('-a', REV.RC)
 R2.flags <- paste('-A', FWD.RC)
 #R2.flags <- paste("-G", REV, "-A", FWD.RC) # Use this flag if you found hits for the `Forward` `FWD.ForwardReads` and `Forward` `REV.ReverseReads`
 
-# Replace '/path/to/cutadapt/bin/cutadapt' by the right path to cutadaot program
+# Replace '/path/to/cutadapt/bin/cutadapt' by the right path to cutadapt program
 
-cutadapt <- '/path/to/cutadapt/bin/cutadapt'
+#cutadapt <- '/home/celinepattaroni/virtual-envs/cutadapt/bin/cutadapt'
 cutadapt.out <- vector("list", length(runs))
 
 # For each run, store the primers-removed sequences in a new directory named 'cutadapt'
@@ -665,7 +667,7 @@ seqtab.nochim <- readRDS('data/seqtab_nochim.rds')
 # Path to the DADA2-formatted reference database
 # Note: use -v to mount the database when using docker containers
 # Replace '/path/to/sh_general_release_dynamic_s_01.12.2017.fasta' by the right path to the reference database (ex:'/home/user/db/sh_general_release_dynamic_s_01.12.2017.fasta')
-db.fp <- '/path/to/sh_general_release_dynamic_s_01.12.2017.fasta'
+# db.fp <- '~/celine.pattaroni@monash.edu/03_Bioinformatics/Databases/ITS/sh_general_release_dynamic_02.02.2019.fasta'
 
 taxonomy <- assignTaxonomy(seqtab.nochim, db.fp, minBoot = 100, multithread=nc)
 saveRDS(taxonomy, 'data/taxonomy.rds')
@@ -705,6 +707,39 @@ fwrite(dada2otu(seqtab.nochim, taxonomy.species), 'data/otu_table.txt', quote = 
 total_counts <- as.data.frame(cbind(row.names(as.data.frame(seqtab)), rowSums(seqtab.nochim)))
 names(total_counts) <- c('SampleID', 'Total count')
 fwrite(total_counts, 'data/total_counts.txt', quote = F, sep = '\t')
+```
+## Create a phylogenetic tree
+
+The DADA2 sequence inference method is reference-free, so we must construct the phylogenetic tree relating the inferred sequence variants de novo. We begin by performing a multiple-alignment using the `DECIPHER` R package. The `phangorn` R package is then used to construct a phylogenetic tree. Here we first construct a neighbor-joining tree, and then fit a GTR+G+I (Generalized time-reversible with Gamma rate variation) maximum likelihood tree using the neighbor-joining tree as a starting point. Adapted from Callahan *et al.* [pipeline](https://f1000research.com/articles/5-1492/v2). Of note, we will first trim the non-overlapping ITS reads yp allow correct sequence alignment.
+
+```{r tree, eval=FALSE}
+# R
+# Extract ASV sequences
+seqs <- colnames(seqtab.nochim)
+names(seqs) <- seqs
+
+# Print fungal sequences that didn't overlap (contains NNNNNNNNNNN in between R1 and R2, TRUE)
+table(grepl('NNNNNNNNNN', seqs))
+
+#Remove the NNNNNNNNNN and beyond for fungi sequences that didn't overlap
+seqs <- gsub('NNNNNNNNNN.*', '', seqs)
+
+# Align sequences
+alignment <- AlignSeqs(DNAStringSet(seqs), anchor = NA)
+phang.align <- phyDat(as(alignment, 'matrix'), type ='DNA')
+dm <- dist.ml(phang.align)
+
+# Build tree (NJ)
+treeNJ <- NJ(dm) # Note, tip order != sequence order
+
+# Fit a GTR+G+I (Generalized time-reversible with Gamma rate variation) maximum likelihood tree
+fit <- pml(treeNJ, data = phang.align)
+fitGTR <- update(fit, k = 4, inv = 0.2)
+fitGTR <- optim.pml(fitGTR, model ='GTR', optInv = TRUE, optGamma = TRUE,
+                    rearrangement = 'stochastic', control = pml.control(trace = 0))
+
+# Save tree as a R data file
+saveRDS(fitGTR, 'data/tree.rds')
 ```
 
 ## Wrapping Up
