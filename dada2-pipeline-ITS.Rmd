@@ -52,7 +52,7 @@ if (!requireNamespace('BiocManager', quietly = TRUE))
 BiocManager::install(c('dada2', 'Biostrings', 'ShortRead', 'DECIPHER'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on your current R version
 
 # Install required packages via CRAN
-install.packages(c('foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr', 'phangorn'))
+install.packages(c('rmarkdown','foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr', 'phangorn'))
 ```
 
 *You need to run this chunk every time to load required packages.*
@@ -63,6 +63,7 @@ version$version.string
 version$platform
 suppressMessages(library(dada2)); packageVersion('dada2')
 suppressMessages(library(plyr)); packageVersion('plyr')
+suppressMessages(library(rmarkdown)); packageVersion('rmarkdown')
 suppressMessages(library(foreach)); packageVersion('foreach')
 suppressMessages(library(doParallel)); packageVersion('doParallel')
 suppressMessages(library(ggplot2)); packageVersion('ggplot2')
@@ -750,18 +751,18 @@ Finally, create a html report and archive it along with final data, figures, pac
 
 ```{bash eval=F}
 # BASH
-# Archive the multiplexed fastq files
+# Archive the multiplexed and demultiplexed fastq files
 ls -d run_data/* \
   | parallel -j -2 'gzip {}/*.fastq'
 [[ ! -d run_data_archives ]] && mkdir run_data_archives
 ls run_data/* -d \
-  | parallel -j -2 'cd {} && tar zcvmf ../../run_data_archives/{/}.tar.gz --exclude=*demultiplexed* --exclude=*filtered* *'
+  | parallel -j -2 'cd {} && tar zcvmf ../../run_data_archives/{/}.tar.gz --exclude=*ITS_filterN* --exclude=*ITS_cutadapt* --exclude=*filtered* *'
 ```
 
 ```{r render, eval=F}
 # R
 # Create a html report
-rmarkdown::render('dada2-pipeline.Rmd')
+rmarkdown::render('dada2-pipeline-ITS.Rmd')
 ```
 
 ```{bash eval=F}
