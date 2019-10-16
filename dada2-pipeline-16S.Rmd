@@ -643,7 +643,7 @@ ls -d run_data/* \
   | parallel -j -2 'gzip {}/*.fastq'
 [[ ! -d run_data_archives ]] && mkdir run_data_archives
 ls run_data/* -d \
-  | parallel -j -2 'cd {} && tar zcvmf ../../run_data_archives/{/}.tar.gz --exclude=*ITS_filterN* --exclude=*ITS_cutadapt* --exclude=*filtered* *'
+  | parallel -j -2 'cd {} && tar zcvmf ../../run_data_archives/{/}.tar.gz --exclude=*filtered* *'
 ```
 
 ```{r render, eval=F}
