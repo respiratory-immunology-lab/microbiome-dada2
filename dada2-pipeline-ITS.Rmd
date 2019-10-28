@@ -52,7 +52,7 @@ if (!requireNamespace('BiocManager', quietly = TRUE))
 BiocManager::install(c('dada2', 'Biostrings', 'ShortRead', 'DECIPHER'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on your current R version
 
 # Install required packages via CRAN
-install.packages(c('rmarkdown','foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr', 'phangorn'))
+install.packages(c('rmarkdown','foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr', 'phangorn', 'rmarkdown', 'knitr'))
 ```
 
 *You need to run this chunk every time to load required packages.*
@@ -74,6 +74,8 @@ suppressMessages(library(Biostrings)); packageVersion('Biostrings')
 suppressMessages(library(ShortRead)); packageVersion('ShortRead')
 suppressMessages(library(phangorn)); packageVersion('phangorn')
 suppressMessages(library(DECIPHER)); packageVersion('DECIPHER')
+suppressMessages(library(rmarkdown)); packageVersion('rmarkdown')
+suppressMessages(library(knitr)); packageVersion('knitr')
 
 # Parallelization
 cores <- detectCores()
