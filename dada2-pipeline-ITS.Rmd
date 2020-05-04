@@ -767,6 +767,6 @@ rmarkdown::render('dada2-pipeline-ITS.Rmd')
 ```{bash eval=F}
 # Bash
 # Archive the results
-tar -zcvf renv
-tar -zcvf run_data
+tar -zcvf run_data.tar.gz  run_data/
+tar -zcvf renv.tar.gz renv/
 ```
