@@ -6,7 +6,7 @@ output:
 ```{r knitr, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Copyright (c) 2019 Respiratory Immunology lab, Monash University, Melbourne, Australia and Service de Pneumologie, Centre Hospitalier Universitaire Vaudois (CHUV), Switzerland.
+Copyright (c) 2020 Respiratory Immunology lab, Monash University, Melbourne, Australia.
 
 Converting amplicons nucleotides sequences from FASTQ files to a table of Amplicons Sequences Variants (ASV) using the DADA2 pipeline (R package {dada2}).
 
@@ -34,29 +34,26 @@ Date:
 
 Place: (ex: Lambda sequencing facility)
 
-# Environment setup
+## Environment setup
 
-Make sure you installed all required libaries **after** launching the `.Rproj` file and initialization with packrat using `packrat::init()`. Packrat will install packages into the `packrat/lib` directory. This takes a while but will not repeat after first installation.
+Make sure you installed all required libaries **after** launching the `.Rproj` file and initialization with renv using `renv::init()`. Use `renv::snapshot()` to save changes (eg. if you insttalled a new library). **You only need to run it once**. everything will be saved in the .Rprofile of the project.
 
-```{r packrat initialisation, eval=T}
+```{r renv initialisation, eval=F}
 # Initialise packrat
-packrat::init(project = '.', infer.dependencies = FALSE)
+renv::init(project = getwd(), bare = TRUE)
 ```
-
-*You only need to run this chunk once.*
 
 ```{r packages installation, eval=F, include=F}
 # Install dada2 and other requires packages via Bioconductor
 if (!requireNamespace('BiocManager', quietly = TRUE))
     install.packages('BiocManager')
-BiocManager::install(c('dada2', 'Biostrings', 'ShortRead', 'DECIPHER'), version = '3.9') # You may need to change the dada2 version of BiocManager depending on your current R version
+BiocManager::install(c('dada2', 'Biostrings', 'ShortRead', 'DECIPHER')) # You may need to change the dada2 version of BiocManager depending on your current R version
 
 # Install required packages via CRAN
 install.packages(c('rmarkdown','foreach', 'doParallel', 'ggplot2', 'ggpubr', 'reshape2', 'data.table', 'plyr', 'phangorn', 'rmarkdown', 'knitr'))
 ```
 
-*You need to run this chunk every time to load required packages.*
-
+Load required packages each time:
 ```{r environment setup, eval=T}
 # Load required R librairies
 version$version.string
@@ -768,9 +765,8 @@ rmarkdown::render('dada2-pipeline-ITS.Rmd')
 ```
 
 ```{bash eval=F}
-# BASH
+# Bash
 # Archive the results
-# BASH
-# Archive the results
-zip -r dada2-pipeline.zip --exclude=packrat/lib* data fig packrat dada2-pipeline-ITS.Rmd dada2-pipeline.Rproj dada2-pipeline.nb.html README.md LICENSE.txt
+tar -zcvf renv
+tar -zcvf run_data
 ```
