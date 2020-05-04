@@ -10,7 +10,7 @@ Note: Commands described in this documentation assume that you are using a Unix 
 The minimal requirements are listed below then further detailed in this section:
 
 * **R 3.6.0:** https://www.r-project.org
-* **R packrat package:** https://cran.r-project.org/web/packages/packrat
+* **R package renv:** https://cran.r-project.org/web/packages/renv/index.html
 * **RStudio:** https://www.rstudio.com
 * **GNU parallel:** https://www.gnu.org/software/parallel
 * **illumina-utils:** https://github.com/merenlab/illumina-utils
@@ -21,7 +21,7 @@ The minimal requirements are listed below then further detailed in this section:
 
 The DADA2 pipeline comes as a R package. Make sure that R (3.6.0 or higher) is installed before starting.
 
-#### R packrat package
+#### R renv package
 
 R packages are managed using renv. This ensures maximal reproducibility and portability of the analysis by using an encapsulated, version controlled, installation of R packages instead of any system-level R packages installation.
 
