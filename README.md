@@ -61,6 +61,35 @@ $ source ~/illumina-utils/bin/activate
 $ pip install illumina-utils
 ```
 
+For macOS users, the process is slightly different, but can be achieved using the following commands in the terminal (also uses virtualenv):
+```
+# The following code will install the files in your home directory
+# If you want them elsewhere, adjust the paths accordingly
+$ mkdir -p ~/github
+$ mkdir -p ~/virtual-envs
+$ cd ~/github
+$ git clone git://github.com/meren/illumina-utils.git
+$ virtualenv ~/virtual-envs/illumina-utils-master/bin/activate
+$ cd illumina-utils
+$ pip3 install -r requirements.txt
+
+# Now to setup the environment variables:
+$ echo 'export PYTHONPATH=$PYTHONPATH:~/github/illumina-utils' >> ~/virtual-envs/illumina-utils-master/bin/activate
+$ echo 'export PATH=$PATH:~/github/illumina-utils/scripts' >> ~/virtual-envs/illumina-utils-master/bin/activate
+$ echo 'alias illumina-utils-activate-master="source ~/virtual-envs/illumina-utils-master/bin/activate"' >> ~/.bash_profile
+$ echo 'alias illumina-utils-activate-v2.7="source ~/virtual-envs/illumina-utils-v2.7/bin/activate"' >> ~/.bash_profile
+
+# Make sure that every time you activate it, it updates itself from the master:
+$ echo 'cd ~/github/illumina-utils && git pull && cd -' >> ~/virtual-envs/illumina-utils-master/bin/activate
+
+# Initial confirmation of illumina-utils package:
+$ pip3 install illumina-utils # should return text saying requirements are already satisfied
+
+# Final confirmation of illumina-utils package:
+$ iu- # type this in and press the TAB key twice
+# A list of all the installed functions should appear if installation worked
+```
+
 To activate/deactivate your illumina-utils virtual environment run:
 ```
 $ source ~/illumina-utils/bin/activate
