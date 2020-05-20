@@ -48,12 +48,28 @@ On debian linux, you can install GNU parallel using the `apt-get` package manage
 $ apt-get install parallel
 ```
 
+On macOS, using the terminal (command + space -> terminal.app), you will first need to install Homebrew, at which point you can then easily install GNU parallel, python 3, and git to facilitate installation of the required packages:
+```
+# Install Homebrew (useful package installer) with the following command:
+$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null
+
+# Next, you can install GNU parallel:
+$ brew install parallel
+
+# You will also need to install python 3:
+$ brew install python # should install python 3.7+
+
+# Finally install git:
+$ brew install git # should install git 2.26+
+# git is used later on to copy GitHub repositories
+
 #### illumina-utils
 
 Illumina-utils is a small FASTQ files-processing library.
 Some chunks in the `dada2-pipeline.Rmd` R Notebook use it to demultiplex FASTQ files.
 
 Best is to create a virtual environment for illumina-utils using [virtualenv](https://virtualenv.pypa.io/en/latest/). On debian linux, you can install it using Python package manager `pip` command:
+
 ```
 $ pip install virtualenv
 $ virtualenv -p python3 ~/illumina-utils # important to specify Python3
