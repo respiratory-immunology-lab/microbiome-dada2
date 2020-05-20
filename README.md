@@ -49,6 +49,7 @@ $ apt-get install parallel
 ```
 
 On macOS, using the terminal (command + space -> terminal.app), you will first need to install Homebrew, at which point you can then easily install GNU parallel, python 3, and git to facilitate installation of the required packages:
+
 ```
 # Install Homebrew (useful package installer) with the following command:
 $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null
@@ -62,6 +63,7 @@ $ brew install python # should install python 3.7+
 # Finally install git:
 $ brew install git # should install git 2.26+
 # git is used later on to copy GitHub repositories
+```
 
 #### illumina-utils
 
@@ -78,6 +80,7 @@ $ pip install illumina-utils
 ```
 
 For macOS users, the process is slightly different, but can be achieved using the following commands in the terminal (also uses virtualenv):
+
 ```
 # The following code will install the files in your home directory
 # If you want them elsewhere, adjust the paths accordingly
