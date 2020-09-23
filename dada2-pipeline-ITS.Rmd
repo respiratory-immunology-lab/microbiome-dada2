@@ -671,7 +671,7 @@ seqtab.nochim <- readRDS('data/seqtab_nochim.rds')
 
 taxonomy <- assignTaxonomy(seqtab.nochim, db.fp, minBoot = 100, multithread=nc)
 saveRDS(taxonomy, 'data/taxonomy.rds')
-fwrite(as.data.frame(taxonomy), 'data/taxonomy.txt', quote = F, sep = '\t')
+fwrite(as.data.frame(taxonomy), 'data/taxonomy.txt', quote = F, sep = '\t', buffMB = 100)
 ```
 
 Unlike for the 16S data, there is no ITS database for the species level assignments based on exact matching between ASVs and sequenced reference strains.
