@@ -597,7 +597,7 @@ dada2otu <- function(seqtab=NULL, taxonomy=NULL) {
 }
 
 # Export OTU table
-fwrite(dada2otu(seqtab.nochim, taxonomy.species), 'data/otu_table.txt', quote = F, sep = '\t')
+fwrite(dada2otu(seqtab.nochim, taxonomy.species), 'data/otu_table.txt', quote = F, sep = '\t', buffMB = 100)
 
 # Export count table
 total_counts <- as.data.frame(cbind(row.names(as.data.frame(seqtab.nochim)), rowSums(seqtab.nochim)))
