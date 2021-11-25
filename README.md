@@ -9,7 +9,7 @@ Note: Commands described in this documentation assume that you are using a Unix 
 
 The minimal requirements are listed below then further detailed in this section:
 
-* **R 3.6.0:** https://www.r-project.org
+* **R >4.0.0:** https://www.r-project.org
 * **R package renv:** https://cran.r-project.org/web/packages/renv/index.html
 * **RStudio:** https://www.rstudio.com
 * **GNU parallel:** https://www.gnu.org/software/parallel
@@ -38,7 +38,29 @@ The `dada2-pipeline-16S.Rmd` and `dada2-pipeline-ITS.Rmd` files provided in this
 
 The prefered way of using these files is with the RStudio Integrated Development Environment (IDE). Make sure you have RStudio installed before starting.
 
+## Conda environment
 
+Since some tools are required outside of the R pipeline, it is recommended to create a conda environment. Make sure you have an updated version of conda/miniconda. Details on how to install conda are provided (here)[https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html]
+
+```
+# Create a conda environment named dada2
+conda create --name dada2
+
+# Activate the environment
+conda activate dada2
+
+# Install illumina-utils
+pip3 install illumina-utils
+
+# Install parallel
+conda install -c conda-forge parallel
+
+# Install cutadapt
+python3 -m pip install --user --upgrade cutadapt
+
+# Install git
+conda install -c anaconda git
+```
 
 ## Files
 
