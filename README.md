@@ -94,7 +94,7 @@ $ git clone https://github.com/respiratory-immunology-lab/microbiome-dada2.git
  my_project_dir
 $ cd my_project_dir
 ```
-If not done yet, get a copy of the DADA2-formatted reference database of your choice at https://benjjneb.github.io/dada2/training.html. We recommend using the latest SILVA db for 16S (`silva_nr_v132_train_set.fa.gz` and `silva_species_assignment_v132.fa.gz`) and UNITE for ITS (`sh_general_release_dynamic_s_01.12.2017.fasta`). We recommend to store it in a directory dedicated to databases instead of keeping it inside the main project directory.
+If not done yet, get a copy of the DADA2-formatted reference database of your choice at https://benjjneb.github.io/dada2/training.html. We recommend using the latest SILVA db for 16S (`silva_nr99_v138.1_train_set.fa.gz` and `silva_nr99_v138.1_wSpecies_train_set.fa.gz`) and UNITE for ITS (`sh_general_release_dynamic_10.05.2021.fasta`). We recommend to store it in a directory dedicated to databases instead of keeping it inside the main project directory.
 
 Place your FASTQ files and the `barcode_to_sample.txt` file in a directory, then place this directory within the directory named `run_data`.
 The final directory structure should look like:
