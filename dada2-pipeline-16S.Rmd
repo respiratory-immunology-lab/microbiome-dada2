@@ -115,8 +115,8 @@ If multiple runs have to be processed, this will be done in parallel. The `-j` a
 
 ```{bash demultiplexing, eval=F}
 # BASH
-# If required, activate your illumina-utils virtual environment 
-# source ~/virtual-envs/illumina-utils/bin/activate
+# If required, activate your conda environment 
+conda activate dada2
 
 # For each run, store demultiplexed sequences in a new directory named "demultiplexed"
 ls -d run_data/* \
