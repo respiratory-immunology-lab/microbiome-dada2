@@ -40,7 +40,7 @@ The prefered way of using these files is with the RStudio Integrated Development
 
 ## Conda environment
 
-Since some tools are required outside of the R pipeline, it is recommended to create a conda environment. Make sure you have an updated version of conda/miniconda. Details on how to install conda are provided (here)[https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html]
+Since some tools are required outside of the R pipeline, it is recommended to create a conda environment. Make sure you have an updated version of conda/miniconda. Details on how to install conda are provided [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
 ```
 # Create a conda environment named dada2
