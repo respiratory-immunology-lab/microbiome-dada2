@@ -169,11 +169,10 @@ data." _Nature Methods_, *13*, 581-583. doi: 10.1038/nmeth.3869.
 
 * **illumina-utils:** Eren AM, Vineis JH, Morrison HG, Sogin ML (2013). "A Filtering Method to Generate High Quality Short Reads Using Illumina Paired-End Technology." _PLOS ONE_, 8(6). doi: 10.1371/journal.pone.0066643.
 
-
 * **cutadapt:** MARTIN, Marcel (2011). "Cutadapt removes adapter sequences from high-throughput sequencing reads." _EMBnet.journal, [S.l.]_ doi: 10.14806/ej.17.1.200.
 
 ## Rights
 
-* Copyright (c) 2019 Respiratory Immunology lab, Monash University, Melbourne, Australia and Service de Pneumologie, Centre Hospitalier Universitaire Vaudois (CHUV), Switzerland.
+* Copyright (c) 2021 Respiratory Immunology lab, Monash University, Melbourne, Australia and Service de Pneumologie, Centre Hospitalier Universitaire Vaudois (CHUV), Switzerland.
 * License: The R Notebook template (.Rmd) is provided under the MIT license (See LICENSE.txt for details)
 * Authors: A. Rapin, C. Pattaroni, A. Butler, B.J. Marsland
