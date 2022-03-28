@@ -6,7 +6,7 @@ output:
 ```{r knitr, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Copyright (c) 2020 Respiratory Immunology lab, Monash University, Melbourne, Australia.
+Copyright (c) 2022 Respiratory Immunology lab, Monash University, Melbourne, Australia.
 
 Converting amplicons nucleotides sequences from FASTQ files to a table of Amplicons Sequences Variants (ASV) using the DADA2 pipeline (R package {dada2}).
 
@@ -204,10 +204,8 @@ R1.flags <- paste('-a', REV.RC)
 R2.flags <- paste('-A', FWD.RC)
 #R2.flags <- paste("-G", REV, "-A", FWD.RC) # Use this flag if you found hits for the `Forward` `FWD.ForwardReads` and `Forward` `REV.ReverseReads`
 
-# Replace '/path/to/cutadapt/bin/cutadapt' by the right path to cutadapt program
-
-#cutadapt <- '/home/celinepattaroni/virtual-envs/cutadapt/bin/cutadapt'
-cutadapt.out <- vector("list", length(runs))
+# Activate the conda environment containing cutadapt
+system('conda activate dada2')
 
 # For each run, store the primers-removed sequences in a new directory named 'cutadapt'
 for(i in 1:length(runs)) {
@@ -215,7 +213,7 @@ for(i in 1:length(runs)) {
   fwd.fn <- sort(list.files(file.path(runs.dirs[i], "ITS_filterN"), pattern = '-R1.fastq'))
   rev.fn <- sort(list.files(file.path(runs.dirs[i], "ITS_filterN"), pattern = '-R2.fastq'))
   cutadapt.out[[i]]  <-  for(j in seq_along(fwd.fn)) 
-    {system2(cutadapt, args = c(R1.flags, R2.flags, '-n', 2, '-m', 100, # -n 2 required to remove FWD and REV from reads
+    {system2('cutadapt', args = c(R1.flags, R2.flags, '-n', 2, '-m', 100, # -n 2 required to remove FWD and REV from reads
                                              '-o', file.path(runs.dirs[i], 'ITS_cutadapt', fwd.fn)[j], 
                                              '-p', file.path(runs.dirs[i], 'ITS_cutadapt', rev.fn)[j], # output
                                              file.path(runs.dirs[i], 'ITS_filterN', fwd.fn)[j], 
