@@ -44,19 +44,19 @@ Since some tools are required outside of the R pipeline, it is recommended to cr
 
 ```
 # Create a conda environment named dada2
-conda create --name dada2
+conda create --name dada2 python=3.6
 
 # Activate the environment
 conda activate dada2
 
 # Install illumina-utils
-pip3 install illumina-utils
+pip install illumina-utils
 
 # Install parallel
 conda install -c conda-forge parallel
 
 # Install cutadapt
-python3 -m pip install --user --upgrade cutadapt
+python -m pip install --user --upgrade cutadapt
 
 # Install git
 conda install -c anaconda git
